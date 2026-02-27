@@ -7,7 +7,7 @@
  * to support both OpenAI SDK errors and Cortex-specific errors.
  */
 
-import type { ErrorType, ClassifiedError } from '../types/api.js';
+import type { ClassifiedError } from '../types/api.js';
 
 /** Shape of an API error with status and headers (matches OpenAI SDK error classes) */
 interface ApiErrorLike {

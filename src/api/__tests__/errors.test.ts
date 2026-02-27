@@ -4,7 +4,6 @@
  */
 
 import { classifyError, parseRetryAfter } from '../errors.js';
-import type { ClassifiedError } from '../../types/api.js';
 
 // Mock structures matching OpenAI SDK error shapes (duck typing)
 function createAPIError(status: number, message: string, headers?: Record<string, string>) {
