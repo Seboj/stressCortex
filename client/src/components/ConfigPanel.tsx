@@ -15,8 +15,22 @@ export function ConfigPanel() {
   const canStart = testStatus === 'idle' || testStatus === 'stopped';
   const canStop = testStatus === 'running';
   const canRestart = testStatus === 'running';
-  const canClear = !isRunning;
+  const hasData = summary !== null || useTestStore.getState().latencyHistory.length > 0;
+  const canClear = !isRunning && hasData;
   const canGenerate = summary !== null && !isRunning && !generating;
+
+  function getClearTooltip(): string | undefined {
+    if (isRunning) return 'Stop the test before clearing data';
+    if (!hasData) return 'No data to clear — run a test first';
+    return undefined;
+  }
+
+  function getReportTooltip(): string | undefined {
+    if (generating) return 'Report is being generated...';
+    if (isRunning) return 'Wait for the test to finish before generating a report';
+    if (summary === null) return 'Run a test to completion first — report needs final metrics';
+    return 'Download a PDF report with LLM-powered analysis';
+  }
 
   async function handleStart() {
     reset();
@@ -97,8 +111,16 @@ export function ConfigPanel() {
     }
   }
 
+  function getStatusHint(): string {
+    if (testStatus === 'running') return 'Test running — wait for completion to generate a report';
+    if (testStatus === 'stopping') return 'Test stopping — draining in-flight requests...';
+    if (testStatus === 'stopped' && summary !== null) return 'Test complete — you can now generate a report or clear data';
+    if (testStatus === 'stopped' && summary === null) return 'Test stopped — no summary available';
+    return 'Configure parameters and start a test';
+  }
+
   return (
-    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+    <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 space-y-2">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <label className="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">
@@ -146,6 +168,7 @@ export function ConfigPanel() {
           <button
             onClick={() => reset()}
             disabled={!canClear}
+            title={getClearTooltip()}
             className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Clear All
@@ -153,6 +176,7 @@ export function ConfigPanel() {
           <button
             onClick={() => void handleGenerateReport()}
             disabled={!canGenerate}
+            title={getReportTooltip()}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {generating ? 'Generating...' : 'Generate Report'}
@@ -183,6 +207,7 @@ export function ConfigPanel() {
           </button>
         </div>
       </div>
+      <p className="text-xs text-gray-500 text-right">{getStatusHint()}</p>
     </div>
   );
 }
