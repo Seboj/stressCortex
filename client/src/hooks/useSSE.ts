@@ -25,18 +25,12 @@ function resetAccumulators(): void {
   totalRequests = 0;
 }
 
-// SSE batch event — the server spreads event data over { type: 'eventName', ...eventData }
+// SSE batch event — the server wraps each event as { type: 'eventName', ...eventData }
 // For events whose data also has a 'type' field (TestLifecycleEvent, ApiErrorEvent),
-// the data's type field OVERRIDES the wrapper type in the JSON object.
-// So TestLifecycleEvent { type: 'starting' } arrives as { type: 'starting', ... }
-// and ApiErrorEvent { type: 'rate_limited' } arrives as { type: 'rate_limited', ... }
+// the bridge renames the inner type to avoid collision:
+//   TestLifecycleEvent → { type: 'test:lifecycle', lifecycleType: 'stopped', ... }
+//   ApiErrorEvent      → { type: 'api:error', errorType: 'rate_limited', ... }
 type SseEvent = { type: string } & Record<string, unknown>;
-
-// Error types from server src/types/api.ts
-const ERROR_TYPES = new Set(['rate_limited', 'server_error', 'client_error', 'timeout']);
-
-// Test lifecycle types from server src/types/events.ts
-const LIFECYCLE_TYPES = new Set(['starting', 'running', 'stopping', 'draining', 'stopped']);
 
 export function useSSE(): void {
   useEffect(() => {
@@ -60,25 +54,29 @@ export function useSSE(): void {
         for (const event of batch) {
           const type = event.type;
 
-          // Test lifecycle events — TestLifecycleEvent.type overrides 'test:lifecycle' wrapper
-          if (LIFECYCLE_TYPES.has(type)) {
-            if (type === 'starting') {
+          // Test lifecycle events — bridge wraps as { type: 'test:lifecycle', lifecycleType: '...' }
+          if (type === 'test:lifecycle') {
+            const lifecycle = event.lifecycleType as string;
+            if (lifecycle === 'starting') {
               resetAccumulators();
               store.reset();
               store.setTestStatus('running');
-            } else if (type === 'running') {
+            } else if (lifecycle === 'running') {
               store.setTestStatus('running');
-            } else if (type === 'stopping' || type === 'draining') {
+            } else if (lifecycle === 'stopping' || lifecycle === 'draining') {
               store.setTestStatus('stopping');
-            } else if (type === 'stopped') {
+            } else if (lifecycle === 'stopped') {
               store.setTestStatus('stopped');
             }
             continue;
           }
 
-          // API error events — ApiErrorEvent.type overrides 'api:error' wrapper
-          if (ERROR_TYPES.has(type)) {
-            store.incrementError(type);
+          // API error events — bridge wraps as { type: 'api:error', errorType: '...' }
+          if (type === 'api:error') {
+            const errorType = event.errorType as string;
+            if (errorType) {
+              store.incrementError(errorType);
+            }
             continue;
           }
 
