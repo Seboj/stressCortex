@@ -12,7 +12,7 @@
 
 - [x] **Phase 1: Foundation and API Client** - TypeScript scaffolding, event bus, and a verified single-turn call to Cortex with correct latency measurement and error classification (completed 2026-02-26)
 - [x] **Phase 2: Conversation Engine and Concurrency** - Multi-turn self-talking medical dialogues running N concurrent conversations with staggered ramp-up and per-conversation error isolation (completed 2026-02-26)
-- [ ] **Phase 3: Metrics and Aggregation** - Rolling latency percentiles, token tracking, throughput, error rates, and a test completion summary report
+- [x] **Phase 3: Metrics and Aggregation** - Rolling latency percentiles, token tracking, throughput, error rates, and a test completion summary report (completed 2026-02-27)
 - [ ] **Phase 4: Server and Dashboard** - Fastify REST+SSE backend and React dashboard giving a live view of test progress, charts, config, and start/stop controls
 
 ---
@@ -72,7 +72,7 @@
   4. The test summary shows error counts broken down by type: `rate_limited`, `server_error`, `client_error`, `timeout`
   5. Token usage per turn (`prompt_tokens` + `completion_tokens`) is tracked individually, making the quadratic growth of prompt tokens visible in the output
 
-**Plans**: TBD
+**Plans**: 03-01, 03-02 (2/2 complete)
 
 ---
 
@@ -92,7 +92,11 @@
   5. Clicking Stop mid-test triggers a graceful drain; the dashboard shows a test completion summary panel with all aggregate metrics once the run finishes
   6. At high concurrency (20+ conversations), the dashboard remains responsive — SSE updates are batched and the browser does not freeze
 
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 04-01-PLAN.md — Fastify server backend: TestController, REST routes, SSE bridge with batching
+- [ ] 04-02-PLAN.md — React client scaffold: Vite 7, Tailwind v4, Zustand store, SSE hook
+- [ ] 04-03-PLAN.md — Dashboard UI components: ConfigPanel, charts, tables, summary panel, App layout
+- [ ] 04-04-PLAN.md — Production build, integration verification, user checkpoint
 
 ---
 
@@ -102,8 +106,8 @@
 |-------|----------------|--------|-----------|
 | 1. Foundation and API Client | 3/3 | Complete | 2026-02-26 |
 | 2. Conversation Engine and Concurrency | 3/3 | Complete | 2026-02-26 |
-| 3. Metrics and Aggregation | 0/0 | Not started | - |
-| 4. Server and Dashboard | 0/0 | Not started | - |
+| 3. Metrics and Aggregation | 2/2 | Complete | 2026-02-27 |
+| 4. Server and Dashboard | 0/4 | Planning complete | - |
 
 ---
 
