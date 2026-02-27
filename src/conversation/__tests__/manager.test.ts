@@ -141,14 +141,9 @@ describe('ConversationManager', () => {
     it('one failing conversation does not affect others', async () => {
       let callNum = 0;
       const makeRequest = jest.fn(
-        async (messages: Array<{ role: string; content: string }>): Promise<CortexResponse> => {
+        async (_messages: Array<{ role: string; content: string }>): Promise<CortexResponse> => {
           callNum++;
-          // Make conversation 2's second turn fail (calls 3-4 are conv 2 turn 1 and 2)
-          // With rampUpDelayMs=0 and 3 convs x 2 turns, the ordering is interleaved
-          // But each conversation has its own runner, so let's fail based on messages content
-          // Actually, since conversations run concurrently, we can't predict exact call order.
-          // Instead, track which conversation is calling by checking the messages.
-          // Simpler: fail every 4th call
+          // Fail every 4th call to simulate one conversation erroring
           if (callNum === 4) {
             throw new Error('Simulated failure');
           }
@@ -260,7 +255,7 @@ describe('ConversationManager', () => {
       // Use a makeRequest that respects an abort signal via closure
       let aborted = false;
       const makeRequest = jest.fn(
-        async (messages: Array<{ role: string; content: string }>): Promise<CortexResponse> => {
+        async (_messages: Array<{ role: string; content: string }>): Promise<CortexResponse> => {
           // Wait up to 5 seconds, but check abort flag
           const start = Date.now();
           while (Date.now() - start < 5000 && !aborted) {
