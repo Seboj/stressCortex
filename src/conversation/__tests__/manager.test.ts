@@ -256,12 +256,33 @@ describe('ConversationManager', () => {
   });
 
   describe('drain timeout', () => {
-    it('resolves within drain timeout even if API calls are slow', async () => {
-      const { makeRequest } = createMockMakeRequest(5000); // very slow
+    it('stop resolves within drain timeout even if API calls are slow', async () => {
+      // Use a makeRequest that respects an abort signal via closure
+      let aborted = false;
+      const makeRequest = jest.fn(
+        async (messages: Array<{ role: string; content: string }>): Promise<CortexResponse> => {
+          // Wait up to 5 seconds, but check abort flag
+          const start = Date.now();
+          while (Date.now() - start < 5000 && !aborted) {
+            await new Promise((resolve) => global.setTimeout(resolve, 50));
+          }
+          if (aborted) {
+            throw new Error('Aborted');
+          }
+          return {
+            content: 'Slow response',
+            model: 'test-model',
+            promptTokens: 10,
+            completionTokens: 5,
+            latencyMs: 5000,
+          };
+        },
+      );
+
       const config = createManagerConfig({
         numConversations: 1,
         turnsPerConversation: 5,
-        drainTimeoutMs: 200, // short drain timeout
+        drainTimeoutMs: 200,
         makeRequest,
       });
 
@@ -278,7 +299,8 @@ describe('ConversationManager', () => {
       // stop() should resolve within ~drainTimeoutMs, not wait for 5s API calls
       expect(stopDuration).toBeLessThan(500);
 
-      // The start promise should also eventually resolve
+      // Abort the slow mock so test cleanup is fast
+      aborted = true;
       await resultPromise;
     }, 10000);
   });
