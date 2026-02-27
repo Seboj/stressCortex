@@ -54,13 +54,13 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Dashboard
 
 - [x] **DASH-01**: User can view a local web UI dashboard showing live test progress in real-time
-- [ ] **DASH-02**: Dashboard shows per-conversation status (active/completed/errored) with current turn number
-- [ ] **DASH-03**: Dashboard shows live latency chart (p50/p95/p99 over time)
-- [ ] **DASH-04**: Dashboard shows token usage chart (prompt + completion tokens over time)
-- [ ] **DASH-05**: Dashboard shows error rate and error type breakdown
+- [x] **DASH-02**: Dashboard shows per-conversation status (active/completed/errored) with current turn number
+- [x] **DASH-03**: Dashboard shows live latency chart (p50/p95/p99 over time)
+- [x] **DASH-04**: Dashboard shows token usage chart (prompt + completion tokens over time)
+- [x] **DASH-05**: Dashboard shows error rate and error type breakdown
 - [x] **DASH-06**: User can configure test parameters in the UI (number of conversations, turns per conversation, concurrency level)
-- [ ] **DASH-07**: User can start and stop tests from the UI
-- [ ] **DASH-08**: Dashboard shows test completion summary after run finishes
+- [x] **DASH-07**: User can start and stop tests from the UI
+- [x] **DASH-08**: Dashboard shows test completion summary after run finishes
 
 ## v2 Requirements
 
@@ -136,13 +136,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SERV-02 | Phase 4 | Complete |
 | SERV-03 | Phase 4 | Complete |
 | DASH-01 | Phase 4 | Complete |
-| DASH-02 | Phase 4 | Pending |
-| DASH-03 | Phase 4 | Pending |
-| DASH-04 | Phase 4 | Pending |
-| DASH-05 | Phase 4 | Pending |
+| DASH-02 | Phase 4 | Complete |
+| DASH-03 | Phase 4 | Complete |
+| DASH-04 | Phase 4 | Complete |
+| DASH-05 | Phase 4 | Complete |
 | DASH-06 | Phase 4 | Complete |
-| DASH-07 | Phase 4 | Pending |
-| DASH-08 | Phase 4 | Pending |
+| DASH-07 | Phase 4 | Complete |
+| DASH-08 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 34 total
