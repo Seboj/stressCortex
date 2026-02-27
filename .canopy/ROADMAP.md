@@ -93,7 +93,7 @@
   6. At high concurrency (20+ conversations), the dashboard remains responsive — SSE updates are batched and the browser does not freeze
 
 **Plans**: 4 plans
-- [ ] 04-01-PLAN.md — Fastify server backend: TestController, REST routes, SSE bridge with batching
+- [x] 04-01-PLAN.md — Fastify server backend: TestController, REST routes, SSE bridge with batching
 - [ ] 04-02-PLAN.md — React client scaffold: Vite 7, Tailwind v4, Zustand store, SSE hook
 - [ ] 04-03-PLAN.md — Dashboard UI components: ConfigPanel, charts, tables, summary panel, App layout
 - [ ] 04-04-PLAN.md — Production build, integration verification, user checkpoint

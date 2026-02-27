@@ -48,7 +48,7 @@
 
 | Plan | Duration (min) | Tasks | Files |
 |------|---------------|-------|-------|
-| 04-server-and-dashboard P01 | ~8 | 3 | 6 |
+| 04-server-and-dashboard P01 | 3 | 3 | 7 |
 | 04-server-and-dashboard P02 | 4 | 2 | 9 |
 
 ## Accumulated Context

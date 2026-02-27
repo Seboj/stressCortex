@@ -47,9 +47,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Server
 
-- [ ] **SERV-01**: System runs a local Fastify server exposing REST API for test control (start/stop/status)
-- [ ] **SERV-02**: System exposes SSE endpoint (`GET /api/events`) pushing real-time metric updates to browser
-- [ ] **SERV-03**: Server batches SSE updates (100-250ms intervals) to prevent browser overload at high concurrency
+- [x] **SERV-01**: System runs a local Fastify server exposing REST API for test control (start/stop/status)
+- [x] **SERV-02**: System exposes SSE endpoint (`GET /api/events`) pushing real-time metric updates to browser
+- [x] **SERV-03**: Server batches SSE updates (100-250ms intervals) to prevent browser overload at high concurrency
 
 ### Dashboard
 
@@ -132,9 +132,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | METR-04 | Phase 3 | Complete |
 | METR-05 | Phase 3 | Complete |
 | METR-06 | Phase 3 | Complete |
-| SERV-01 | Phase 4 | Pending |
-| SERV-02 | Phase 4 | Pending |
-| SERV-03 | Phase 4 | Pending |
+| SERV-01 | Phase 4 | Complete |
+| SERV-02 | Phase 4 | Complete |
+| SERV-03 | Phase 4 | Complete |
 | DASH-01 | Phase 4 | Complete |
 | DASH-02 | Phase 4 | Pending |
 | DASH-03 | Phase 4 | Pending |
