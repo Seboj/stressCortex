@@ -1,10 +1,8 @@
 /**
  * Tests for ConversationRunner — single conversation turn loop.
- *
- * TDD RED phase: these tests define the expected behavior.
- * The runner doesn't exist yet, so all tests should fail.
  */
 
+import { jest } from '@jest/globals';
 import { createConversationRunner } from '../runner.js';
 import { eventBus } from '../../core/event-bus.js';
 import type { CortexResponse } from '../../types/api.js';
@@ -220,19 +218,20 @@ describe('ConversationRunner', () => {
 
   describe('error handling', () => {
     it('marks conversation as errored when makeRequest throws', async () => {
-      const makeRequest = jest.fn()
-        .mockResolvedValueOnce({
-          content: 'Turn 1 ok',
-          model: 'test',
-          promptTokens: 10,
-          completionTokens: 5,
-          latencyMs: 100,
-        })
-        .mockRejectedValueOnce({
-          type: 'server_error',
-          statusCode: 500,
-          message: 'Internal server error',
-        });
+      let callNum = 0;
+      const makeRequest = jest.fn(async (): Promise<CortexResponse> => {
+        callNum++;
+        if (callNum === 1) {
+          return {
+            content: 'Turn 1 ok',
+            model: 'test',
+            promptTokens: 10,
+            completionTokens: 5,
+            latencyMs: 100,
+          };
+        }
+        throw { type: 'server_error', statusCode: 500, message: 'Internal server error' };
+      });
 
       const config = createConfig({ turnsPerConversation: 3, makeRequest });
       const runner = createConversationRunner(config);
@@ -244,7 +243,9 @@ describe('ConversationRunner', () => {
     });
 
     it('does not throw — always returns a result', async () => {
-      const makeRequest = jest.fn().mockRejectedValue(new Error('Network failure'));
+      const makeRequest = jest.fn(async (): Promise<CortexResponse> => {
+        throw new Error('Network failure');
+      });
 
       const config = createConfig({ turnsPerConversation: 2, makeRequest });
       const runner = createConversationRunner(config);
@@ -259,7 +260,9 @@ describe('ConversationRunner', () => {
       const completes: ConversationCompleteEvent[] = [];
       eventBus.on('conversation:complete', (evt) => completes.push(evt));
 
-      const makeRequest = jest.fn().mockRejectedValue(new Error('API down'));
+      const makeRequest = jest.fn(async (): Promise<CortexResponse> => {
+        throw new Error('API down');
+      });
       const config = createConfig({ turnsPerConversation: 2, makeRequest });
       const runner = createConversationRunner(config);
       await runner.run();
