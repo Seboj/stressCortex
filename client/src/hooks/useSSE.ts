@@ -7,6 +7,8 @@ let allLatencies: number[] = [];
 let totalPrompt = 0;
 let totalCompletion = 0;
 let sequenceCounter = 0;
+let testStartTime = 0;
+let totalRequests = 0;
 
 function computePercentile(sorted: number[], p: number): number {
   if (sorted.length === 0) return 0;
@@ -19,6 +21,8 @@ function resetAccumulators(): void {
   totalPrompt = 0;
   totalCompletion = 0;
   sequenceCounter = 0;
+  testStartTime = Date.now();
+  totalRequests = 0;
 }
 
 // SSE batch event — the server spreads event data over { type: 'eventName', ...eventData }
@@ -129,6 +133,16 @@ export function useSSE(): void {
                 completionTokens: totalCompletion,
               };
               store.addTokenPoint(tokenPoint);
+
+              // Compute live throughput
+              totalRequests += 1;
+              const elapsedSec = (Date.now() - testStartTime) / 1000;
+              if (elapsedSec > 0) {
+                store.setThroughput({
+                  requestsPerSecond: totalRequests / elapsedSec,
+                  tokensPerSecond: (totalPrompt + totalCompletion) / elapsedSec,
+                });
+              }
               break;
             }
 
