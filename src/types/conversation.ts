@@ -41,3 +41,30 @@ export interface ConversationResult {
   totalLatencyMs: number;
   turns: ConversationTurnResult[];
 }
+
+// ── Manager Types (Plan 02) ─────────────────────────────────────────
+
+/** Configuration for the ConversationManager */
+export interface ManagerConfig {
+  /** Number of concurrent conversations to run */
+  numConversations: number;
+  /** Number of turns per conversation */
+  turnsPerConversation: number;
+  /** Base delay between conversation launches in ms (default: 200) */
+  rampUpDelayMs?: number;
+  /** Drain timeout in ms when stopping (default: 30000) */
+  drainTimeoutMs?: number;
+  /** Function to make API calls -- passed through to each runner */
+  makeRequest: (messages: Array<{ role: string; content: string }>) => Promise<CortexResponse>;
+}
+
+/** Result of a complete test run */
+export interface TestRunResult {
+  conversations: ConversationResult[];
+  totalConversations: number;
+  completedConversations: number;
+  erroredConversations: number;
+  totalTurns: number;
+  totalLatencyMs: number;
+  stoppedEarly: boolean;
+}
