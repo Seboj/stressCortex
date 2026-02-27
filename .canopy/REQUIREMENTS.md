@@ -9,17 +9,17 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUN-01**: System uses TypeScript with strict types for all API contracts, events, and metrics
-- [ ] **FOUN-02**: System reads API key from `CORTEX_API_KEY` environment variable and fails fast with clear error if missing
-- [ ] **FOUN-03**: System emits typed events via EventEmitter bus for all conversation and metric updates
+- [x] **FOUN-01**: System uses TypeScript with strict types for all API contracts, events, and metrics
+- [x] **FOUN-02**: System reads API key from `CORTEX_API_KEY` environment variable and fails fast with clear error if missing
+- [x] **FOUN-03**: System emits typed events via EventEmitter bus for all conversation and metric updates
 
 ### API Client
 
-- [ ] **API-01**: User can make a single-turn chat completion request to Cortex `/v1/chat/completions` endpoint
-- [ ] **API-02**: System captures per-request latency using high-resolution timestamps (`performance.now()`)
-- [ ] **API-03**: System parses `usage.prompt_tokens` and `usage.completion_tokens` from each API response
-- [ ] **API-04**: System classifies errors into four types: `rate_limited` (429), `server_error` (5xx), `client_error` (4xx), `timeout`
-- [ ] **API-05**: System respects `Retry-After` header on 429 responses and backs off accordingly
+- [x] **API-01**: User can make a single-turn chat completion request to Cortex `/v1/chat/completions` endpoint
+- [x] **API-02**: System captures per-request latency using high-resolution timestamps (`performance.now()`)
+- [x] **API-03**: System parses `usage.prompt_tokens` and `usage.completion_tokens` from each API response
+- [x] **API-04**: System classifies errors into four types: `rate_limited` (429), `server_error` (5xx), `client_error` (4xx), `timeout`
+- [x] **API-05**: System respects `Retry-After` header on 429 responses and backs off accordingly
 
 ### Conversation Engine
 
@@ -109,14 +109,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | Phase 1 | Pending |
-| FOUN-02 | Phase 1 | Pending |
-| FOUN-03 | Phase 1 | Pending |
-| API-01 | Phase 1 | Pending |
-| API-02 | Phase 1 | Pending |
-| API-03 | Phase 1 | Pending |
-| API-04 | Phase 1 | Pending |
-| API-05 | Phase 1 | Pending |
+| FOUN-01 | Phase 1 | Complete |
+| FOUN-02 | Phase 1 | Complete |
+| FOUN-03 | Phase 1 | Complete |
+| API-01 | Phase 1 | Complete |
+| API-02 | Phase 1 | Complete |
+| API-03 | Phase 1 | Complete |
+| API-04 | Phase 1 | Complete |
+| API-05 | Phase 1 | Complete |
 | CONV-01 | Phase 2 | Complete |
 | CONV-02 | Phase 2 | Complete |
 | CONV-03 | Phase 2 | Complete |
@@ -151,4 +151,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-26*
-*Last updated: 2026-02-26 after roadmap creation (corrected count to 34; DASH-* updated to Phase 4)*
+*Last updated: 2026-02-26 after Phase 2 completion (17/34 requirements complete)*

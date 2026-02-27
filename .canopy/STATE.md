@@ -1,7 +1,7 @@
 # State: StressCortex
 
 **Last updated:** 2026-02-26
-**Session:** Initial roadmap creation
+**Session:** Phase 2 execution complete
 
 ---
 
@@ -11,24 +11,24 @@
 
 **Target API:** `https://cortex.nfinitmonkeys.com` — `POST /v1/chat/completions` (OpenAI-compatible)
 
-**Current focus:** Phase 1 — Foundation and API Client
+**Current focus:** Phase 3 — Metrics and Aggregation
 
 ---
 
 ## Current Position
 
-**Phase:** 1 of 4
+**Phase:** 3 of 4
 **Plan:** None started
-**Status:** Milestone complete
+**Status:** Ready for planning
 
 ```
-[          ] Phase 1: Foundation and API Client
-[          ] Phase 2: Conversation Engine and Concurrency
+[##########] Phase 1: Foundation and API Client       ✓ 2026-02-26
+[##########] Phase 2: Conversation Engine and Concurrency ✓ 2026-02-26
 [          ] Phase 3: Metrics and Aggregation
 [          ] Phase 4: Server and Dashboard
 ```
 
-**Overall progress:** 0/4 phases complete
+**Overall progress:** 2/4 phases complete
 
 ---
 
@@ -38,9 +38,9 @@
 |--------|-------|
 | Phases defined | 4 |
 | Requirements covered | 34/34 |
-| Plans created | 0 |
-| Plans completed | 0 |
-| Phases completed | 0 |
+| Plans created | 6 |
+| Plans completed | 6 |
+| Phases completed | 2 |
 
 ---
 
@@ -55,6 +55,11 @@
 | Phase 4 merges Server+Dashboard | Neither SERV nor DASH is usable without the other; merging reflects delivery reality |
 | Server+Dashboard as last phase | Dashboard depends on working SSE events, which depend on metrics, which depend on the conversation engine |
 | Phases follow research-recommended component build order | types → event bus → HTTP client → workers → metrics → server → UI |
+| 1 turn = 1 API call | M=3 means 3 API calls per conversation, matching "5x3=15 distinct calls" success criteria |
+| makeRequest injection for testability | Runner accepts makeRequest function, no import of API client — clean test mocking |
+| Promise.allSettled over p-queue | Simpler for "launch N with stagger" pattern; p-queue reserved for future dynamic concurrency |
+| AbortController for drain timer | Prevents lingering timers in tests and production; clean cleanup pattern |
+| Type cast at integration boundary | cortex.makeRequest (OpenAI types) cast to simpler {role,content} — safe because runner only builds valid messages |
 
 ### Architecture Notes (from research)
 
@@ -80,7 +85,7 @@
 
 ### Todos
 
-- [ ] Draft and validate doctor/patient system prompts before Phase 2 implementation (quality affects conversation realism)
+- [x] Draft and validate doctor/patient system prompts before Phase 2 implementation (completed in Phase 2, Plan 01)
 
 ### Blockers
 
@@ -92,7 +97,7 @@ None.
 
 ### Resume Prompt
 
-"Continue StressCortex. Currently in Phase 1 (Foundation and API Client). No plans exist yet. Run `/canopy:plan-phase 1` to create the Phase 1 execution plan."
+"Continue StressCortex. Phases 1 and 2 are complete. Currently ready for Phase 3 (Metrics and Aggregation). 50 tests pass. Run `/canopy:plan-phase 3` to create the Phase 3 execution plan."
 
 ### Key Files
 
@@ -100,7 +105,11 @@ None.
 - `.canopy/REQUIREMENTS.md` — all v1 requirements with traceability
 - `.canopy/PROJECT.md` — project context, constraints, API details
 - `.canopy/research/SUMMARY.md` — stack decisions, architecture, pitfalls
+- `src/conversation/` — conversation engine (runner, manager, prompts)
+- `src/types/conversation.ts` — conversation and manager types
+- `src/types/events.ts` — all typed events (API + conversation + lifecycle)
 
 ---
 
 *State initialized: 2026-02-26*
+*Last updated: 2026-02-26 after Phase 2 completion*

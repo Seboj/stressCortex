@@ -10,8 +10,8 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation and API Client** - TypeScript scaffolding, event bus, and a verified single-turn call to Cortex with correct latency measurement and error classification
-- [ ] **Phase 2: Conversation Engine and Concurrency** - Multi-turn self-talking medical dialogues running N concurrent conversations with staggered ramp-up and per-conversation error isolation
+- [x] **Phase 1: Foundation and API Client** - TypeScript scaffolding, event bus, and a verified single-turn call to Cortex with correct latency measurement and error classification (completed 2026-02-26)
+- [x] **Phase 2: Conversation Engine and Concurrency** - Multi-turn self-talking medical dialogues running N concurrent conversations with staggered ramp-up and per-conversation error isolation (completed 2026-02-26)
 - [ ] **Phase 3: Metrics and Aggregation** - Rolling latency percentiles, token tracking, throughput, error rates, and a test completion summary report
 - [ ] **Phase 4: Server and Dashboard** - Fastify REST+SSE backend and React dashboard giving a live view of test progress, charts, config, and start/stop controls
 
@@ -34,7 +34,7 @@
   4. A 429 response is logged as `rate_limited` (not `error`), and a 5xx response is logged as `server_error` — each classified distinctly
   5. A 429 response with a `Retry-After` header causes the client to wait that duration before any retry attempt
 
-**Plans**: TBD
+**Plans**: 01-01, 01-02, 01-03 (3/3 complete)
 
 ---
 
@@ -53,7 +53,7 @@
   4. Deliberately killing one conversation mid-run (simulated error injection) does not stop or corrupt any other conversation
   5. Issuing a stop command drains in-flight requests to completion before the process exits — no orphaned connections
 
-**Plans**: TBD
+**Plans**: 02-01, 02-02, 02-03 (3/3 complete)
 
 ---
 
@@ -100,12 +100,12 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and API Client | 0/0 | Not started | - |
-| 2. Conversation Engine and Concurrency | 0/0 | Not started | - |
+| 1. Foundation and API Client | 3/3 | Complete | 2026-02-26 |
+| 2. Conversation Engine and Concurrency | 3/3 | Complete | 2026-02-26 |
 | 3. Metrics and Aggregation | 0/0 | Not started | - |
 | 4. Server and Dashboard | 0/0 | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-26*
-*Last updated: 2026-02-26 after initial creation*
+*Last updated: 2026-02-26 after Phase 2 completion*
