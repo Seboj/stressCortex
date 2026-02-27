@@ -31,10 +31,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Concurrency
 
-- [ ] **CONC-01**: User can spin up N concurrent conversations simultaneously
-- [ ] **CONC-02**: System uses staggered ramp-up with jitter to avoid thundering-herd pattern at test start
-- [ ] **CONC-03**: One failed conversation does not kill others — errors are isolated per conversation
-- [ ] **CONC-04**: User can stop a running test gracefully (in-flight requests drain, no orphaned connections)
+- [x] **CONC-01**: User can spin up N concurrent conversations simultaneously
+- [x] **CONC-02**: System uses staggered ramp-up with jitter to avoid thundering-herd pattern at test start
+- [x] **CONC-03**: One failed conversation does not kill others — errors are isolated per conversation
+- [x] **CONC-04**: User can stop a running test gracefully (in-flight requests drain, no orphaned connections)
 
 ### Metrics
 
@@ -122,10 +122,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONV-03 | Phase 2 | Complete |
 | CONV-04 | Phase 2 | Complete |
 | CONV-05 | Phase 2 | Complete |
-| CONC-01 | Phase 2 | Pending |
-| CONC-02 | Phase 2 | Pending |
-| CONC-03 | Phase 2 | Pending |
-| CONC-04 | Phase 2 | Pending |
+| CONC-01 | Phase 2 | Complete |
+| CONC-02 | Phase 2 | Complete |
+| CONC-03 | Phase 2 | Complete |
+| CONC-04 | Phase 2 | Complete |
 | METR-01 | Phase 3 | Pending |
 | METR-02 | Phase 3 | Pending |
 | METR-03 | Phase 3 | Pending |
