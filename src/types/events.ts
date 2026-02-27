@@ -1,9 +1,14 @@
 /**
  * Typed event definitions for the EventEmitter bus.
  * Maps event names to their argument tuples for compile-time safety.
+ *
+ * Phase 1: api:request, api:response, api:error
+ * Phase 2: conversation:start, conversation:turn:complete, conversation:complete, test:lifecycle
  */
 
 import type { ErrorType } from './api.js';
+
+// ── Phase 1: API Events ──────────────────────────────────────────────
 
 /** Emitted before an API request is made */
 export interface ApiRequestEvent {
@@ -30,14 +35,65 @@ export interface ApiErrorEvent {
   latencyMs: number;
 }
 
+// ── Phase 2: Conversation Events ─────────────────────────────────────
+
+/** Emitted when a conversation begins */
+export interface ConversationStartEvent {
+  conversationId: number;
+  turnsTotal: number;
+  timestamp: number;
+}
+
+/** Emitted after each turn (API call) in a conversation */
+export interface ConversationTurnCompleteEvent {
+  conversationId: number;
+  turnNumber: number;
+  turnsTotal: number;
+  role: 'doctor' | 'patient';
+  latencyMs: number;
+  promptTokens: number;
+  completionTokens: number;
+  messageCount: number;
+  timestamp: number;
+}
+
+/** Emitted when a conversation finishes (completed or errored) */
+export interface ConversationCompleteEvent {
+  conversationId: number;
+  turnsCompleted: number;
+  status: 'completed' | 'errored';
+  errorMessage?: string;
+  totalLatencyMs: number;
+  timestamp: number;
+}
+
+// ── Phase 2: Test Lifecycle Events ───────────────────────────────────
+
+/** Emitted at each stage of the test run lifecycle */
+export interface TestLifecycleEvent {
+  type: 'starting' | 'running' | 'stopping' | 'draining' | 'stopped';
+  conversationsTotal: number;
+  conversationsActive: number;
+  timestamp: number;
+}
+
+// ── Event Map ────────────────────────────────────────────────────────
+
 /**
  * Event map for the typed EventEmitter bus.
  * Each key is an event name, each value is the argument tuple.
- * Phase 1 events: api:request, api:response, api:error
- * Additional events will be added in Phase 2+ (conversation, test lifecycle).
  */
 export interface EventMap {
+  // Phase 1: API events
   'api:request': [ApiRequestEvent];
   'api:response': [ApiResponseEvent];
   'api:error': [ApiErrorEvent];
+
+  // Phase 2: Conversation events
+  'conversation:start': [ConversationStartEvent];
+  'conversation:turn:complete': [ConversationTurnCompleteEvent];
+  'conversation:complete': [ConversationCompleteEvent];
+
+  // Phase 2: Test lifecycle events
+  'test:lifecycle': [TestLifecycleEvent];
 }
