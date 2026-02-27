@@ -135,20 +135,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SERV-01 | Phase 4 | Pending |
 | SERV-02 | Phase 4 | Pending |
 | SERV-03 | Phase 4 | Pending |
-| DASH-01 | Phase 5 | Pending |
-| DASH-02 | Phase 5 | Pending |
-| DASH-03 | Phase 5 | Pending |
-| DASH-04 | Phase 5 | Pending |
-| DASH-05 | Phase 5 | Pending |
-| DASH-06 | Phase 5 | Pending |
-| DASH-07 | Phase 5 | Pending |
-| DASH-08 | Phase 5 | Pending |
+| DASH-01 | Phase 4 | Pending |
+| DASH-02 | Phase 4 | Pending |
+| DASH-03 | Phase 4 | Pending |
+| DASH-04 | Phase 4 | Pending |
+| DASH-05 | Phase 4 | Pending |
+| DASH-06 | Phase 4 | Pending |
+| DASH-07 | Phase 4 | Pending |
+| DASH-08 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 30 total
-- Mapped to phases: 30
+- v1 requirements: 34 total
+- Mapped to phases: 34
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-26*
-*Last updated: 2026-02-26 after initial definition*
+*Last updated: 2026-02-26 after roadmap creation (corrected count to 34; DASH-* updated to Phase 4)*
