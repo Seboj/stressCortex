@@ -38,12 +38,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Metrics
 
-- [ ] **METR-01**: System tracks per-turn latency for each conversation (latency array indexed by turn number)
-- [ ] **METR-02**: System calculates aggregate latency percentiles: p50, p95, p99
-- [ ] **METR-03**: System tracks throughput in requests/second and tokens/second
-- [ ] **METR-04**: System tracks error rates by error type (rate_limited, server_error, client_error, timeout)
-- [ ] **METR-05**: System tracks token usage per turn (prompt_tokens + completion_tokens) to reveal quadratic growth
-- [ ] **METR-06**: System produces a test completion summary report with all aggregate metrics
+- [x] **METR-01**: System tracks per-turn latency for each conversation (latency array indexed by turn number)
+- [x] **METR-02**: System calculates aggregate latency percentiles: p50, p95, p99
+- [x] **METR-03**: System tracks throughput in requests/second and tokens/second
+- [x] **METR-04**: System tracks error rates by error type (rate_limited, server_error, client_error, timeout)
+- [x] **METR-05**: System tracks token usage per turn (prompt_tokens + completion_tokens) to reveal quadratic growth
+- [x] **METR-06**: System produces a test completion summary report with all aggregate metrics
 
 ### Server
 
@@ -53,12 +53,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Dashboard
 
-- [ ] **DASH-01**: User can view a local web UI dashboard showing live test progress in real-time
+- [x] **DASH-01**: User can view a local web UI dashboard showing live test progress in real-time
 - [ ] **DASH-02**: Dashboard shows per-conversation status (active/completed/errored) with current turn number
 - [ ] **DASH-03**: Dashboard shows live latency chart (p50/p95/p99 over time)
 - [ ] **DASH-04**: Dashboard shows token usage chart (prompt + completion tokens over time)
 - [ ] **DASH-05**: Dashboard shows error rate and error type breakdown
-- [ ] **DASH-06**: User can configure test parameters in the UI (number of conversations, turns per conversation, concurrency level)
+- [x] **DASH-06**: User can configure test parameters in the UI (number of conversations, turns per conversation, concurrency level)
 - [ ] **DASH-07**: User can start and stop tests from the UI
 - [ ] **DASH-08**: Dashboard shows test completion summary after run finishes
 
@@ -126,21 +126,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONC-02 | Phase 2 | Complete |
 | CONC-03 | Phase 2 | Complete |
 | CONC-04 | Phase 2 | Complete |
-| METR-01 | Phase 3 | Pending |
-| METR-02 | Phase 3 | Pending |
-| METR-03 | Phase 3 | Pending |
-| METR-04 | Phase 3 | Pending |
-| METR-05 | Phase 3 | Pending |
-| METR-06 | Phase 3 | Pending |
+| METR-01 | Phase 3 | Complete |
+| METR-02 | Phase 3 | Complete |
+| METR-03 | Phase 3 | Complete |
+| METR-04 | Phase 3 | Complete |
+| METR-05 | Phase 3 | Complete |
+| METR-06 | Phase 3 | Complete |
 | SERV-01 | Phase 4 | Pending |
 | SERV-02 | Phase 4 | Pending |
 | SERV-03 | Phase 4 | Pending |
-| DASH-01 | Phase 4 | Pending |
+| DASH-01 | Phase 4 | Complete |
 | DASH-02 | Phase 4 | Pending |
 | DASH-03 | Phase 4 | Pending |
 | DASH-04 | Phase 4 | Pending |
 | DASH-05 | Phase 4 | Pending |
-| DASH-06 | Phase 4 | Pending |
+| DASH-06 | Phase 4 | Complete |
 | DASH-07 | Phase 4 | Pending |
 | DASH-08 | Phase 4 | Pending |
 
@@ -151,4 +151,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-26*
-*Last updated: 2026-02-26 after Phase 2 completion (17/34 requirements complete)*
+*Last updated: 2026-02-27 after Phase 3 completion (23/34 requirements complete)*

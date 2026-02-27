@@ -1,7 +1,7 @@
 # State: StressCortex
 
 **Last updated:** 2026-02-27
-**Session:** Phase 3 execution complete
+**Session:** Phase 4 Plan 02 execution complete
 
 ---
 
@@ -18,17 +18,17 @@
 ## Current Position
 
 **Phase:** 4 of 4
-**Plan:** None started
-**Status:** Ready for planning
+**Plan:** 2 of 3 complete
+**Status:** In progress
 
 ```
 [##########] Phase 1: Foundation and API Client       ✓ 2026-02-26
 [##########] Phase 2: Conversation Engine and Concurrency ✓ 2026-02-26
 [##########] Phase 3: Metrics and Aggregation         ✓ 2026-02-27
-[          ] Phase 4: Server and Dashboard
+[######    ] Phase 4: Server and Dashboard (2/3 plans complete)
 ```
 
-**Overall progress:** 3/4 phases complete
+**Overall progress:** 3.5/4 phases complete
 
 ---
 
@@ -39,10 +39,17 @@
 | Phases defined | 4 |
 | Requirements covered | 34/34 |
 | Plans created | 8 |
-| Plans completed | 8 |
+| Plans completed | 10 |
 | Phases completed | 3 |
 
 ---
+
+## Execution Metrics
+
+| Plan | Duration (min) | Tasks | Files |
+|------|---------------|-------|-------|
+| 04-server-and-dashboard P01 | ~8 | 3 | 6 |
+| 04-server-and-dashboard P02 | 4 | 2 | 9 |
 
 ## Accumulated Context
 
@@ -64,6 +71,9 @@
 | TestSummary as Phase 4 handoff contract | JSON-serializable interface, no Map/functions/circular refs — ready for SSE push |
 | stdout for summary, not pino | Pino wraps in JSON (production mode), making formatted tables unreadable; stdout is CI-friendly |
 | Sort-based exact percentiles | Dataset size (N*M values) is small enough for exact computation — no streaming approximation needed |
+| SSE event type collision resolution | TestLifecycleEvent and ApiErrorEvent 'type' fields override the 'test:lifecycle'/'api:error' wrapper; useSSE uses priority set-checks for LIFECYCLE_TYPES and ERROR_TYPES |
+| Module-level latency/token accumulators | Kept in useSSE.ts (outside React/Zustand) for O(1) accumulation; reset on test:lifecycle starting event |
+| Chart x-axis uses sequence counter | Incrementing integer per turn instead of wall-clock timestamps — simpler and avoids axis label crowding |
 
 ### Architecture Notes (from research)
 
@@ -114,8 +124,10 @@ None.
 - `src/types/events.ts` — all typed events (API + conversation + lifecycle + metrics)
 - `src/metrics/` — MetricsCollector, percentiles, summary printer
 - `src/types/metrics.ts` — TestSummary interface (Phase 4 handoff contract)
+- `client/src/store/useTestStore.ts` — Zustand store for all dashboard state
+- `client/src/hooks/useSSE.ts` — SSE client hook dispatching events to store
 
 ---
 
 *State initialized: 2026-02-26*
-*Last updated: 2026-02-27 after Phase 3 completion*
+*Last updated: 2026-02-27 after Phase 4 Plan 02 completion*
