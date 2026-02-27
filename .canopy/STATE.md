@@ -1,7 +1,7 @@
 # State: StressCortex
 
-**Last updated:** 2026-02-26
-**Session:** Phase 2 execution complete
+**Last updated:** 2026-02-27
+**Session:** Phase 3 execution complete
 
 ---
 
@@ -11,24 +11,24 @@
 
 **Target API:** `https://cortex.nfinitmonkeys.com` — `POST /v1/chat/completions` (OpenAI-compatible)
 
-**Current focus:** Phase 3 — Metrics and Aggregation
+**Current focus:** Phase 4 — Server and Dashboard
 
 ---
 
 ## Current Position
 
-**Phase:** 3 of 4
+**Phase:** 4 of 4
 **Plan:** None started
 **Status:** Ready for planning
 
 ```
 [##########] Phase 1: Foundation and API Client       ✓ 2026-02-26
 [##########] Phase 2: Conversation Engine and Concurrency ✓ 2026-02-26
-[          ] Phase 3: Metrics and Aggregation
+[##########] Phase 3: Metrics and Aggregation         ✓ 2026-02-27
 [          ] Phase 4: Server and Dashboard
 ```
 
-**Overall progress:** 2/4 phases complete
+**Overall progress:** 3/4 phases complete
 
 ---
 
@@ -38,9 +38,9 @@
 |--------|-------|
 | Phases defined | 4 |
 | Requirements covered | 34/34 |
-| Plans created | 6 |
-| Plans completed | 6 |
-| Phases completed | 2 |
+| Plans created | 8 |
+| Plans completed | 8 |
+| Phases completed | 3 |
 
 ---
 
@@ -60,6 +60,10 @@
 | Promise.allSettled over p-queue | Simpler for "launch N with stagger" pattern; p-queue reserved for future dynamic concurrency |
 | AbortController for drain timer | Prevents lingering timers in tests and production; clean cleanup pattern |
 | Type cast at integration boundary | cortex.makeRequest (OpenAI types) cast to simpler {role,content} — safe because runner only builds valid messages |
+| MetricsCollector as event subscriber | Decoupled from conversation engine — only listens to events, never imports from conversation modules |
+| TestSummary as Phase 4 handoff contract | JSON-serializable interface, no Map/functions/circular refs — ready for SSE push |
+| stdout for summary, not pino | Pino wraps in JSON (production mode), making formatted tables unreadable; stdout is CI-friendly |
+| Sort-based exact percentiles | Dataset size (N*M values) is small enough for exact computation — no streaming approximation needed |
 
 ### Architecture Notes (from research)
 
@@ -97,7 +101,7 @@ None.
 
 ### Resume Prompt
 
-"Continue StressCortex. Phases 1 and 2 are complete. Currently ready for Phase 3 (Metrics and Aggregation). 50 tests pass. Run `/canopy:plan-phase 3` to create the Phase 3 execution plan."
+"Continue StressCortex. Phases 1-3 are complete. Currently ready for Phase 4 (Server and Dashboard). 76 tests pass. Run `/canopy:plan-phase 4` to create the Phase 4 execution plan."
 
 ### Key Files
 
@@ -107,9 +111,11 @@ None.
 - `.canopy/research/SUMMARY.md` — stack decisions, architecture, pitfalls
 - `src/conversation/` — conversation engine (runner, manager, prompts)
 - `src/types/conversation.ts` — conversation and manager types
-- `src/types/events.ts` — all typed events (API + conversation + lifecycle)
+- `src/types/events.ts` — all typed events (API + conversation + lifecycle + metrics)
+- `src/metrics/` — MetricsCollector, percentiles, summary printer
+- `src/types/metrics.ts` — TestSummary interface (Phase 4 handoff contract)
 
 ---
 
 *State initialized: 2026-02-26*
-*Last updated: 2026-02-26 after Phase 2 completion*
+*Last updated: 2026-02-27 after Phase 3 completion*
