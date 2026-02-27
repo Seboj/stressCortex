@@ -23,11 +23,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Conversation Engine
 
-- [ ] **CONV-01**: User can run multi-turn conversations where full message history is sent as JSON context each turn
-- [ ] **CONV-02**: System uses role-based system prompts — medical professional on one side, patient on the other
-- [ ] **CONV-03**: Medical professional initiates with "How are you feeling today?" and follows up based on patient responses
-- [ ] **CONV-04**: Each API response becomes the next turn's input message (self-talking loop)
-- [ ] **CONV-05**: User can configure number of turns per conversation (M)
+- [x] **CONV-01**: User can run multi-turn conversations where full message history is sent as JSON context each turn
+- [x] **CONV-02**: System uses role-based system prompts — medical professional on one side, patient on the other
+- [x] **CONV-03**: Medical professional initiates with "How are you feeling today?" and follows up based on patient responses
+- [x] **CONV-04**: Each API response becomes the next turn's input message (self-talking loop)
+- [x] **CONV-05**: User can configure number of turns per conversation (M)
 
 ### Concurrency
 
@@ -117,11 +117,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-03 | Phase 1 | Pending |
 | API-04 | Phase 1 | Pending |
 | API-05 | Phase 1 | Pending |
-| CONV-01 | Phase 2 | Pending |
-| CONV-02 | Phase 2 | Pending |
-| CONV-03 | Phase 2 | Pending |
-| CONV-04 | Phase 2 | Pending |
-| CONV-05 | Phase 2 | Pending |
+| CONV-01 | Phase 2 | Complete |
+| CONV-02 | Phase 2 | Complete |
+| CONV-03 | Phase 2 | Complete |
+| CONV-04 | Phase 2 | Complete |
+| CONV-05 | Phase 2 | Complete |
 | CONC-01 | Phase 2 | Pending |
 | CONC-02 | Phase 2 | Pending |
 | CONC-03 | Phase 2 | Pending |
