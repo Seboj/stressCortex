@@ -1,134 +1,43 @@
 /**
  * StressCortex entry point.
- * Runs N concurrent multi-turn medical conversations against the Cortex API
- * with staggered ramp-up and graceful shutdown.
  *
- * Configuration via environment variables:
- *   CORTEX_API_KEY     - Required: API key for Cortex
- *   STRESS_CONVERSATIONS - Number of concurrent conversations (default: 5)
- *   STRESS_TURNS        - Turns per conversation (default: 3)
- *   STRESS_RAMP_DELAY   - Base ramp-up delay in ms (default: 200)
+ * Starts the Fastify server on port 3001, which provides:
+ *   POST /api/test/start  — Start a stress test run
+ *   POST /api/test/stop   — Stop a running test
+ *   GET  /api/test/status — Query current test status
+ *   GET  /api/events      — SSE stream of live test events (batched at 200ms)
+ *   GET  /                — Serve compiled React dashboard SPA
+ *
+ * Tests are triggered via the REST API (not CLI args).
+ * Connect the React dashboard at http://localhost:3001 to control tests
+ * and view live metrics.
  */
 
-import { validateConfig } from './core/config.js';
-import { createCortexClient } from './api/client.js';
-import { createConversationManager } from './conversation/index.js';
-import { eventBus } from './core/event-bus.js';
+import { createServer } from './server/index.js';
+import { sseBridge } from './server/sse-bridge.js';
 import { logger } from './core/logger.js';
 
 async function main(): Promise<void> {
-  // Validate environment — exits with clear error if API key missing
-  const config = validateConfig();
+  // Build the Fastify app with all routes registered
+  const server = await createServer();
 
-  // Create instrumented API client
-  const cortex = createCortexClient(config);
+  // Start the SSE bridge — subscribes to event bus and begins 200ms batch flush
+  sseBridge.start();
 
-  // Parse configuration from environment
-  const numConversations = parseInt(process.env.STRESS_CONVERSATIONS ?? '5', 10);
-  const turnsPerConversation = parseInt(process.env.STRESS_TURNS ?? '3', 10);
-  const rampUpDelayMs = parseInt(process.env.STRESS_RAMP_DELAY ?? '200', 10);
+  // Start listening on all interfaces (0.0.0.0 for container/network access)
+  await server.listen({ port: 3001, host: '0.0.0.0' });
+  logger.info({ port: 3001 }, 'StressCortex server listening on http://localhost:3001');
 
-  // Set up event listeners for visibility
-  eventBus.on('conversation:start', (evt) => {
-    logger.info(
-      { conversationId: evt.conversationId, turnsTotal: evt.turnsTotal },
-      `Conversation ${evt.conversationId} started`,
-    );
-  });
-
-  eventBus.on('conversation:turn:complete', (evt) => {
-    logger.info(
-      {
-        conversationId: evt.conversationId,
-        turn: `${evt.turnNumber}/${evt.turnsTotal}`,
-        role: evt.role,
-        latencyMs: evt.latencyMs,
-        tokens: evt.promptTokens + evt.completionTokens,
-        messageCount: evt.messageCount,
-      },
-      `Conv ${evt.conversationId} turn ${evt.turnNumber}/${evt.turnsTotal} (${evt.role})`,
-    );
-  });
-
-  eventBus.on('conversation:complete', (evt) => {
-    const status = evt.status === 'completed' ? 'ok' : 'ERRORED';
-    logger.info(
-      {
-        conversationId: evt.conversationId,
-        status: evt.status,
-        turnsCompleted: evt.turnsCompleted,
-      },
-      `Conversation ${evt.conversationId} ${status}`,
-    );
-  });
-
-  eventBus.on('test:lifecycle', (evt) => {
-    logger.info(
-      {
-        type: evt.type,
-        total: evt.conversationsTotal,
-        active: evt.conversationsActive,
-      },
-      `Test lifecycle: ${evt.type}`,
-    );
-  });
-
-  // Create conversation manager
-  // Type cast: ConversationRunner builds messages as {role, content} which is a subset
-  // of OpenAI's ChatCompletionMessageParam. The cast is safe because the runner
-  // only sends valid role+content messages.
-  const manager = createConversationManager({
-    numConversations,
-    turnsPerConversation,
-    rampUpDelayMs,
-    makeRequest: cortex.makeRequest as unknown as (
-      messages: Array<{ role: string; content: string }>,
-    ) => Promise<import('./types/api.js').CortexResponse>,
-  });
-
-  // Register signal handlers for graceful shutdown
-  const handleSignal = (signal: string) => {
+  // Graceful shutdown: stop SSE bridge flushing, close server (drains in-flight requests)
+  const shutdown = async (signal: string) => {
     logger.info({ signal }, `Received ${signal}, initiating graceful shutdown...`);
-    manager.stop();
+    sseBridge.stop();
+    await server.close();
+    process.exit(0);
   };
-  process.on('SIGINT', () => handleSignal('SIGINT'));
-  process.on('SIGTERM', () => handleSignal('SIGTERM'));
 
-  // Log start banner
-  logger.info(
-    {
-      event: 'test_start',
-      numConversations,
-      turnsPerConversation,
-      rampUpDelayMs,
-      expectedApiCalls: numConversations * turnsPerConversation,
-    },
-    `Starting stress test: ${numConversations} conversations x ${turnsPerConversation} turns`,
-  );
-
-  // Run the test
-  const result = await manager.start();
-
-  // Print summary
-  const summary = [
-    '',
-    '  ======================================================',
-    '  StressCortex Test Summary',
-    '  ======================================================',
-    `    Conversations:  ${result.completedConversations}/${result.totalConversations} completed, ${result.erroredConversations} errored`,
-    `    Total turns:    ${result.totalTurns}`,
-    `    Total time:     ${Math.round(result.totalLatencyMs)}ms`,
-    `    Stopped early:  ${result.stoppedEarly ? 'yes' : 'no'}`,
-    '  ======================================================',
-    '',
-  ].join('\n');
-
-  process.stdout.write(summary);
-
-  // Exit with appropriate code
-  if (result.erroredConversations === result.totalConversations) {
-    process.exit(1);
-  }
+  process.on('SIGINT', () => void shutdown('SIGINT'));
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
 }
 
 main().catch((error: unknown) => {
