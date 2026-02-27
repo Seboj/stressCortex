@@ -1,7 +1,7 @@
 /**
  * StressCortex entry point.
  *
- * Starts the Fastify server on port 3001, which provides:
+ * Starts the Fastify server on port 6765, which provides:
  *   POST /api/test/start  — Start a stress test run
  *   POST /api/test/stop   — Stop a running test
  *   GET  /api/test/status — Query current test status
@@ -9,7 +9,7 @@
  *   GET  /                — Serve compiled React dashboard SPA
  *
  * Tests are triggered via the REST API (not CLI args).
- * Connect the React dashboard at http://localhost:3001 to control tests
+ * Connect the React dashboard at http://localhost:6765 to control tests
  * and view live metrics.
  */
 
@@ -25,8 +25,8 @@ async function main(): Promise<void> {
   sseBridge.start();
 
   // Start listening on all interfaces (0.0.0.0 for container/network access)
-  await server.listen({ port: 3001, host: '0.0.0.0' });
-  logger.info({ port: 3001 }, 'StressCortex server listening on http://localhost:3001');
+  await server.listen({ port: 6765, host: '0.0.0.0' });
+  logger.info({ port: 6765 }, 'StressCortex server listening on http://localhost:6765');
 
   // Graceful shutdown: stop SSE bridge flushing, close server (drains in-flight requests)
   const shutdown = async (signal: string) => {

@@ -15,6 +15,7 @@ import fastifyCors from '@fastify/cors';
 import path from 'path';
 import { testRoutes } from './routes/test.js';
 import { eventsRoute } from './routes/events.js';
+import { reportRoutes } from './routes/report.js';
 
 export async function createServer() {
   const fastify = Fastify({ logger: false });
@@ -27,6 +28,9 @@ export async function createServer() {
 
   // SSE endpoint for pushing live event-bus updates to the dashboard
   await fastify.register(eventsRoute);
+
+  // Report generation endpoint (LLM-powered PDF)
+  await fastify.register(reportRoutes);
 
   // Serve compiled React SPA from client/dist
   const clientDistPath = path.join(import.meta.dirname, '../../client/dist');

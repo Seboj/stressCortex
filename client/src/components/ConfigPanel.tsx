@@ -1,15 +1,22 @@
+import { useState } from 'react';
 import { useTestStore } from '../store/useTestStore';
 
 export function ConfigPanel() {
   const config = useTestStore((s) => s.config);
   const testStatus = useTestStore((s) => s.testStatus);
+  const summary = useTestStore((s) => s.summary);
   const setConfig = useTestStore((s) => s.setConfig);
   const setTestStatus = useTestStore((s) => s.setTestStatus);
   const reset = useTestStore((s) => s.reset);
 
+  const [generating, setGenerating] = useState(false);
+
   const isRunning = testStatus === 'running' || testStatus === 'stopping';
   const canStart = testStatus === 'idle' || testStatus === 'stopped';
   const canStop = testStatus === 'running';
+  const canRestart = testStatus === 'running';
+  const canClear = !isRunning;
+  const canGenerate = summary !== null && !isRunning && !generating;
 
   async function handleStart() {
     reset();
@@ -36,6 +43,57 @@ export function ConfigPanel() {
       await fetch('/api/test/stop', { method: 'POST' });
     } catch (err) {
       console.error('Failed to stop test:', err);
+    }
+  }
+
+  async function handleRestart() {
+    setTestStatus('stopping');
+    try {
+      await fetch('/api/test/stop', { method: 'POST' });
+      reset();
+      setTestStatus('running');
+      const res = await fetch('/api/test/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      });
+      if (res.status === 409) {
+        console.error('Test already running');
+        setTestStatus('idle');
+      }
+    } catch (err) {
+      console.error('Failed to restart test:', err);
+      setTestStatus('idle');
+    }
+  }
+
+  async function handleGenerateReport() {
+    if (!summary) return;
+    setGenerating(true);
+    try {
+      const res = await fetch('/api/report/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ summary }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Report generation failed:', err);
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `stresscortex-report-${new Date().toISOString().slice(0, 10)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to generate report:', err);
+    } finally {
+      setGenerating(false);
     }
   }
 
@@ -86,11 +144,35 @@ export function ConfigPanel() {
 
         <div className="flex items-center gap-2 ml-auto">
           <button
+            onClick={() => reset()}
+            disabled={!canClear}
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Clear All
+          </button>
+          <button
+            onClick={() => void handleGenerateReport()}
+            disabled={!canGenerate}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {generating ? 'Generating...' : 'Generate Report'}
+          </button>
+
+          <div className="w-px h-6 bg-gray-600" />
+
+          <button
             onClick={() => void handleStart()}
             disabled={!canStart}
             className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Start Test
+          </button>
+          <button
+            onClick={() => void handleRestart()}
+            disabled={!canRestart}
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            Restart
           </button>
           <button
             onClick={() => void handleStop()}

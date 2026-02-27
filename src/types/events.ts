@@ -4,9 +4,11 @@
  *
  * Phase 1: api:request, api:response, api:error
  * Phase 2: conversation:start, conversation:turn:complete, conversation:complete, test:lifecycle
+ * Phase 3: metrics:summary
  */
 
 import type { ErrorType } from './api.js';
+import type { TestSummary } from './metrics.js';
 
 // ── Phase 1: API Events ──────────────────────────────────────────────
 
@@ -77,6 +79,14 @@ export interface TestLifecycleEvent {
   timestamp: number;
 }
 
+// ── Phase 3: Metrics Events ─────────────────────────────────────────
+
+/** Emitted when the test summary is computed at test completion */
+export interface MetricsSummaryEvent {
+  summary: TestSummary;
+  timestamp: number;
+}
+
 // ── Event Map ────────────────────────────────────────────────────────
 
 /**
@@ -96,4 +106,7 @@ export interface EventMap {
 
   // Phase 2: Test lifecycle events
   'test:lifecycle': [TestLifecycleEvent];
+
+  // Phase 3: Metrics events
+  'metrics:summary': [MetricsSummaryEvent];
 }
